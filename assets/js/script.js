@@ -1,10 +1,13 @@
 var taskIdCounter = 0;
+//create array to hold tasks for saving
 var tasks = []
 var pageContentEl = document.querySelector("#page-content");
 var formEl =document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
+
+
 var completeEditTask = function(taskName, taskType, taskId) {
 // find the matching task list item
 var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
@@ -96,7 +99,6 @@ tasks.push(taskDataObj);
 
 saveTasks();
 
- //increase task counter for next id
  taskIdCounter++;
 
 console.log(taskDataObj);
@@ -236,8 +238,27 @@ for (var i = 0; i < tasks.length; i++) {
 var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+var loadTasks = function() {
+//get task items from ls
+var savedTasks=localStorage.getItem("tasks")
 
+//reassign tasks to ls return value
+if(!savedTasks){
+  return false
+}
+//convert tasks from string format back into array of objects
+savedTasks = JSON.parse(savedTasks)
+//iterate throught ask array and create task elements based on it
+for (var i=0; i<savedTasks.length; i++){
+  //pass each task object into createTaskEl
+  createTaskEl(savedTasks[i]);
+ 
+}
+ //increase task counter for next id
+
+}
 
 formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+loadTasks();
